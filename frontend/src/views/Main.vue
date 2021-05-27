@@ -190,7 +190,7 @@
             async createRoom() {
                 const resp = await this.axios.post('/room', {name: this.newRoomName});
                 if (resp.status === 200) {
-                    const id = resp.data.roomId;
+                    const id = resp.data.id;
                     this.currentRoom = id;
                     this.joinRoom(id);
                 }
@@ -198,6 +198,7 @@
             async joinRoom(id) {
                 const resp = await this.axios.put('/profile', {currentRoom: id});
                 if (resp.status === 200) {
+                    await this.axios.post('/user_to_room', {id: id});
                     await this.$router.push('/game')
                 }
             }

@@ -24,8 +24,8 @@ public class RoomController {
         return roomRepo.findAll();
     }
 
-    @GetMapping("{roomId}")
-    public Room getOne(@PathVariable("roomId") Room room){
+    @GetMapping("{id}")
+    public Room getOne(@PathVariable("id") Room room){
         return room;
     }
 
@@ -34,15 +34,15 @@ public class RoomController {
         return roomRepo.save(room);
     }
 
-    @PutMapping("{roomId}")
-    public Room update(@PathVariable("roomId") Room roomFromDb,
+    @PutMapping("{id}")
+    public Room update(@PathVariable("id") Room roomFromDb,
                                       @RequestBody Room room){
         BeanUtils.copyProperties(room, roomFromDb, "roomId");
         return roomRepo.save(roomFromDb);
     }
 
-    @DeleteMapping("{roomId}")
-    public void delete(@PathVariable("roomId") Room room){
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable("id") Room room){
         roomRepo.delete(room);
     }
 }

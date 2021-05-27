@@ -7,12 +7,12 @@ import javax.persistence.*;
 
 @Entity
 @Table
-@ToString(of = {"roomId", "name"})
-@EqualsAndHashCode(of = {"roomId"})
+@ToString(of = {"id", "name"})
+@EqualsAndHashCode(of = {"id"})
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long roomId;
+    private Long id;
     private String name;
 
     public String getName() {
@@ -23,11 +23,11 @@ public class Room {
         this.name = name;
     }
 
-    public Long getRoomId() {
-        return roomId;
+    public Long getId() {
+        return id;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setId(Long id) {
+        this.id = id;
     }
 }
