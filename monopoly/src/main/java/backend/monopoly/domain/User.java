@@ -16,6 +16,43 @@ public class User {
     private String locale;
     private LocalDateTime lastVisit;
 
+    private Integer currentRoom;
+    private int totalGames;
+    private int totalLoses;
+    private int totalWins;
+
+    public Integer getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public void setCurrentRoom(Integer currentRoom) {
+        this.currentRoom = currentRoom;
+    }
+
+    public int getTotalGames() {
+        return totalGames;
+    }
+
+    public void setTotalGames(int totalGames) {
+        this.totalGames = totalGames;
+    }
+
+    public int getTotalLoses() {
+        return totalLoses;
+    }
+
+    public void setTotalLoses(int totalLoses) {
+        this.totalLoses = totalLoses;
+    }
+
+    public int getTotalWins() {
+        return totalWins;
+    }
+
+    public void setTotalWins(int totalWins) {
+        this.totalWins = totalWins;
+    }
+
     public String getId() {
         return id;
     }
