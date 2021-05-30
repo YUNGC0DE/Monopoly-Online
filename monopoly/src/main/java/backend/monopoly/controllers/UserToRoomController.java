@@ -6,8 +6,12 @@ import backend.monopoly.domain.UserToRoom;
 import backend.monopoly.repo.RoomRepo;
 import backend.monopoly.repo.UserToRoomRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -24,9 +28,10 @@ public class UserToRoomController {
         this.userToRoomRepo = userToRoomRepo;
     }
 
-    @GetMapping("{id}")
-    public UserToRoom getOne(@PathVariable("id") UserToRoom userToRoom){
-        return userToRoom;
+    @GetMapping()
+    public List<UserToRoom> getAllInTheRoom(@AuthenticationPrincipal User user){
+        Long roomId =  (long) user.getCurrentRoom();
+        return userToRoomRepo.RoomId(roomId);
     }
 
     @PostMapping
@@ -37,4 +42,11 @@ public class UserToRoomController {
         userToRoom.setUser(user);
         return userToRoomRepo.save(userToRoom);
     }
+
+    @MessageMapping("/changePlayer")
+    @SendTo("/topic/activity")
+    public UserToRoom change(UserToRoom userToRoom) {
+        return userToRoomRepo.save(userToRoom);
+    }
+
 }
