@@ -14,6 +14,24 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    private boolean isStarted;
+    private int playersNumber;
+
+    public boolean isStarted() {
+        return isStarted;
+    }
+
+    public void setStarted(boolean started) {
+        isStarted = started;
+    }
+
+    public int getPlayersNumber() {
+        return playersNumber;
+    }
+
+    public void setPlayersNumber(int playersNumber) {
+        this.playersNumber = playersNumber;
+    }
 
     public String getName() {
         return name;

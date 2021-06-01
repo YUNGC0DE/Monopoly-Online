@@ -21,7 +21,7 @@ public class RoomController {
 
     @GetMapping
     public List<Room> list() {
-        return roomRepo.findAll();
+        return roomRepo.isStarted(false);
     }
 
     @GetMapping("{id}")
@@ -35,9 +35,8 @@ public class RoomController {
     }
 
     @PutMapping("{id}")
-    public Room update(@PathVariable("id") Room roomFromDb,
-                                      @RequestBody Room room){
-        BeanUtils.copyProperties(room, roomFromDb, "roomId");
+    public Room start(@PathVariable("id") Room roomFromDb){
+        roomFromDb.setStarted(true);
         return roomRepo.save(roomFromDb);
     }
 

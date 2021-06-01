@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table
-public class UserToRoom {
+public class UserToRoom implements Comparable<UserToRoom> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -36,6 +36,11 @@ public class UserToRoom {
     )
 
     private List<Property> properties =new ArrayList<>();
+
+    @Override
+    public int compareTo(UserToRoom o) {
+        return this.getId().compareTo(o.getId());
+    }
 
     public boolean isYourTurn() {
         return isYourTurn;

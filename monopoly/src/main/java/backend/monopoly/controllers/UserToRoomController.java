@@ -11,7 +11,11 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -31,7 +35,9 @@ public class UserToRoomController {
     @GetMapping()
     public List<UserToRoom> getAllInTheRoom(@AuthenticationPrincipal User user){
         Long roomId =  (long) user.getCurrentRoom();
-        return userToRoomRepo.RoomId(roomId);
+        List<UserToRoom> userToRoomList = userToRoomRepo.RoomId(roomId);
+        Collections.sort(userToRoomList);
+        return userToRoomList;
     }
 
     @PostMapping
