@@ -17,11 +17,11 @@ public class Room {
     private boolean isStarted;
     private int playersNumber;
 
-    public boolean isStarted() {
+    public boolean getIsStarted() {
         return isStarted;
     }
 
-    public void setStarted(boolean started) {
+    public void setIsStarted(boolean started) {
         isStarted = started;
     }
 

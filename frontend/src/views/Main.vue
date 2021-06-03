@@ -162,7 +162,7 @@
     export default {
         name: 'Main',
         data: () => ({
-            userName: 'null',
+            userName: null,
             rooms: null,
             currentRoom: null,
             totalGames: null,
@@ -199,6 +199,11 @@
                 const resp = await this.axios.put('/profile', {currentRoom: id});
                 if (resp.status === 200) {
                     await this.axios.post('/user_to_room', {id: id});
+                    const roomInfo = await this.axios.get(`/room/${id}`);
+                    const playersInfo = await this.axios.get('/user_to_room');
+                    if (roomInfo.data.playersNumber === playersInfo.data.length){
+                        await this.axios.put(`/room/${id}`)
+                    }
                     await this.$router.push('/game')
                 }
             }

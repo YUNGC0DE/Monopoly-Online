@@ -11,11 +11,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -52,6 +49,17 @@ public class UserToRoomController {
     @MessageMapping("/changePlayer")
     @SendTo("/topic/activity")
     public UserToRoom change(UserToRoom userToRoom) {
+        List<UserToRoom> userToRoomList = userToRoomRepo.RoomId(userToRoom.getRoom().getId());
+        Collections.sort(userToRoomList);
+        for (int i = 0; i < userToRoomList.size(); i++) {
+            Long playerId = userToRoomList.get(i).getId();
+            if (playerId.equals(userToRoom.getId())) {
+                UserToRoom nextPlayer = userToRoomList.size() == i+1 ? userToRoomList.get(0): userToRoomList.get(i+1);
+                nextPlayer.setIsYourTurn(true);
+                userToRoomRepo.save(nextPlayer);
+            }
+        }
+        userToRoom.setIsYourTurn(false);
         return userToRoomRepo.save(userToRoom);
     }
 

@@ -1,11 +1,13 @@
 package backend.monopoly.controllers;
 
 import backend.monopoly.domain.Room;
+import backend.monopoly.domain.UserToRoom;
 import backend.monopoly.repo.RoomRepo;
-import org.springframework.beans.BeanUtils;
+import backend.monopoly.repo.UserToRoomRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -13,6 +15,9 @@ import java.util.List;
 public class RoomController {
 
     private final RoomRepo roomRepo;
+
+    @Autowired
+    public UserToRoomRepo userToRoomRepo;
 
     @Autowired
     public RoomController(RoomRepo roomRepo) {
@@ -36,7 +41,12 @@ public class RoomController {
 
     @PutMapping("{id}")
     public Room start(@PathVariable("id") Room roomFromDb){
-        roomFromDb.setStarted(true);
+        List<UserToRoom> userToRoomList = userToRoomRepo.RoomId(roomFromDb.getId());
+        Collections.sort(userToRoomList);
+        UserToRoom startUser = userToRoomList.get(0);
+        startUser.setIsYourTurn(true);
+        userToRoomRepo.save(startUser);
+        roomFromDb.setIsStarted(true);
         return roomRepo.save(roomFromDb);
     }
 

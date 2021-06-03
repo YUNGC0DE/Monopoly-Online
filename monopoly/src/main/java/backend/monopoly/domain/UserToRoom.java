@@ -42,11 +42,11 @@ public class UserToRoom implements Comparable<UserToRoom> {
         return this.getId().compareTo(o.getId());
     }
 
-    public boolean isYourTurn() {
+    public boolean getIsYourTurn() {
         return isYourTurn;
     }
 
-    public void setYourTurn(boolean yourTurn) {
+    public void setIsYourTurn(boolean yourTurn) {
         isYourTurn = yourTurn;
     }
 
