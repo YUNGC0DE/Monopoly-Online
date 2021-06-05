@@ -1,0 +1,32 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x00007f51b06e4fa3, pid=15990, tid=16005
+#
+# JRE version: OpenJDK Runtime Environment (11.0.11+9) (build 11.0.11+9)
+# Java VM: OpenJDK 64-Bit Server VM (11.0.11+9, mixed mode, tiered, compressed oops, g1 gc, linux-amd64)
+# Problematic frame:
+# C  [libjimage.so+0x2fa3]
+#
+# Core dump will be written. Default location: Core dumps may be processed with "/usr/lib/systemd/systemd-coredump %P %u %g %s %t %c %h" (or dumping to /home/evgenii/3Course/backend/Monopoly-Online/monopoly/core.15990)
+#
+# If you would like to submit a bug report, please visit:
+#   https://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=127.0.0.1:33399 -Dfile.encoding=UTF-8 -Duser.country=RU -Duser.language=ru -Duser.variant backend.monopoly.MonopolyApplication
+
+Host: Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz, 8 cores, 7G, Manjaro Linux
+Time: Tue Jun  1 05:06:16 2021 MSK elapsed time: 202.571144 seconds (0d 0h 3m 22s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007f51a8174000):  JavaThread "Signal Dispatcher" daemon [_thread_in_vm, id=16005, stack(0x00007f519028d000,0x00007f519038e000)]
+
+Stack: [0x00007f519028d000,0x00007f519038e000],  sp=0x00007f519038b0b0,  free space=1016k
+Native frames: (J=compiled Java code, A=aot compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [libjimage.so+0x2fa3]
+C  [libjimage.so+0x3c6e]
+C  [libjimage.so+0x4164]
