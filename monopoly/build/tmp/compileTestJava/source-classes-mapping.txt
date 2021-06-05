@@ -1,0 +1,2 @@
+backend/monopoly/MonopolyApplicationTests.java
+ backend.monopoly.MonopolyApplicationTests

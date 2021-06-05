@@ -1,0 +1,32 @@
+backend/monopoly/domain/User.java
+ backend.monopoly.domain.User
+backend/monopoly/domain/Property.java
+ backend.monopoly.domain.Property
+backend/monopoly/controllers/PropertyController.java
+ backend.monopoly.controllers.PropertyController
+backend/monopoly/domain/Room.java
+ backend.monopoly.domain.Room
+backend/monopoly/repo/UserDetailsRepo.java
+ backend.monopoly.repo.UserDetailsRepo
+backend/monopoly/repo/PropertyRepo.java
+ backend.monopoly.repo.PropertyRepo
+backend/monopoly/MonopolyApplication.java
+ backend.monopoly.MonopolyApplication
+backend/monopoly/controllers/UserController.java
+ backend.monopoly.controllers.UserController
+backend/monopoly/exceptions/NotFoundException.java
+ backend.monopoly.exceptions.NotFoundException
+backend/monopoly/repo/RoomRepo.java
+ backend.monopoly.repo.RoomRepo
+backend/monopoly/config/WebSocketConfig.java
+ backend.monopoly.config.WebSocketConfig
+backend/monopoly/config/WebSecurityConfig.java
+ backend.monopoly.config.WebSecurityConfig
+backend/monopoly/repo/UserToRoomRepo.java
+ backend.monopoly.repo.UserToRoomRepo
+backend/monopoly/controllers/RoomController.java
+ backend.monopoly.controllers.RoomController
+backend/monopoly/controllers/UserToRoomController.java
+ backend.monopoly.controllers.UserToRoomController
+backend/monopoly/domain/UserToRoom.java
+ backend.monopoly.domain.UserToRoom
