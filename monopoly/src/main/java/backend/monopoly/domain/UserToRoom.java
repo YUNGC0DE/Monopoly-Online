@@ -25,7 +25,7 @@ public class UserToRoom implements Comparable<UserToRoom> {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-    private int money;
+    private int money = 1500;
     private boolean isYourTurn;
     private int position;
 

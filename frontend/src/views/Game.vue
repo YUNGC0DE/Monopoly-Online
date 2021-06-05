@@ -1,18 +1,21 @@
 <template>
     <v-row style="min-width: 2000px" class="my-12">
         <v-col cols="2" class="mx-auto pr-12">
-            <div style=" height: 750px; ">
+            <div>
                 <v-list style="background-color: rgb(242, 242, 242)" class="mx-5">
                     <v-list-item v-for="user in users" :key="user.id">
-                        <v-card class="my-4" height="150px" width="180px">
+                        <v-card class="my-4" height="200px" width="180px">
                             <v-card-title>
                                 {{user.user.name}}
                             </v-card-title>
                             <v-card-subtitle class="my-auto">
                                 <b>Баланс: {{user.money}}$</b>
                             </v-card-subtitle>
-                            <v-card-text v-if="user.isYourTurn" style="color: indianred">
+                            <v-card-text style="color: blueviolet">
+                                <b> Позиция: {{user.position}} </b>
+                                <p v-if="user.isYourTurn" style="color: indianred">
                                 <b> Ходит </b>
+                            </p>
                             </v-card-text>
                         </v-card>
 
@@ -39,7 +42,7 @@
 
                         >
                             <v-card-title>
-                                <b>{{ property.name }}</b>
+                                <b>{{property.position}} - {{ property.name }}</b>
                             </v-card-title>
                             <v-card-subtitle>
                                 <b>{{property.owner}}</b>
@@ -86,27 +89,22 @@
             </v-row>
         </v-col>
         <v-col cols="2" style="margin-right: 150px;" class="pa-0" v-if="isStarted">
-            <div style=" height: 750px;" v-if="yourTurn">
+            <div style=" height: 750px;">
                 <v-row class="my-12">
 
-                    <v-col cols="12">
+                    <v-col cols="12" v-if="yourTurn">
                         <v-btn depressed color="primary" width="100%" height="60px" @click="move()">
                             <h3>Сделать ход </h3>
                         </v-btn>
                     </v-col>
-                    <v-col cols="12">
-                        <v-btn depressed color="error" width="100%" height="60px"
-                               v-if="yourProperty">
-                            <h3>Продать</h3>
-                        </v-btn>
-                        <v-btn depressed color="error" width="100%" height="60px" v-else-if="!zeroPosition">
+                    <v-col cols="12" v-if="canBuy">
+                        <v-btn depressed color="error" width="100%" height="60px" @click="buy()">
                             <h3>Купить</h3>
                         </v-btn>
                     </v-col>
-                    <v-col cols="12">
-                        <v-btn depressed dark color="black" width="100%" height="60px">
-                            <h3>Позиция: {{currentPosition}}</h3>
-
+                    <v-col cols="12" v-if="canBuy">
+                        <v-btn depressed dark color="black" width="100%" height="60px" @click="endMove()">
+                            <h3>Закончить ход</h3>
                         </v-btn>
                     </v-col>
                 </v-row>
@@ -128,7 +126,6 @@
         </v-col>
     </v-row>
 
-
 </template>
 
 <script>
@@ -142,11 +139,13 @@
             currentPosition: 0,
             thisPlayer: null,
             yourTurn: false,
-            yourProperty: false,
             isStarted: false,
-            zeroPosition: true,
+            canBuy: false,
             properties: [],
             users: [],
+            incomeData: []
+
+            /*
             incomeData: [
                 {"position":1, "owner": "", "color": "green", "id": 1, "mapPosition": 1, "name": "1", "price": 1},
                 {"position":2, "owner": "", "color": "green", "id": 2, "mapPosition": 2, "name": "2", "price": 2},
@@ -175,13 +174,15 @@
                 {"position":17, "owner": "", "color": "pink", "id": 17, "mapPosition": 18, "name": "17", "price": 17},
                 {"position":18, "owner": "", "color": "brown", "id": 18, "mapPosition": 12, "name": "18", "price": 18},
                 {"position":19, "owner": "", "color": "brown", "id": 19, "mapPosition": 6, "name": "19", "price": 19},
-            ]
+            ] */
+
         }),
         created() {
             this.getPlayers();
             this.getCurrentPlayer();
             this.connect();
-            this.getProperties();
+            this.prepProps();
+            this.fetchProperties();
         },
         methods: {
             async getCurrentPlayer() {
@@ -206,7 +207,6 @@
                     console.log(resp.data)
                 }
                 this.isYourTurn();
-                this.isYourProperty();
             },
             isYourTurn() {
                 console.log("Died Here");
@@ -226,17 +226,29 @@
                     if (user.user.id === this.thisPlayer) {
                         const position = user.position;
                         this.currentPosition = position;
-                        this.yourProperty = false;
+                        this.canBuy = true;
                         if (position === 0) {
-                            this.zeroPosition=true;
+                            this.canBuy = false;
                             return
                         }
-                        this.zeroPosition = false;
-                        for (let i = 0; i<this.properties.length; i++){
-                            const property = this.properties[i];
+                        for (let k = 0;k<this.properties.length; k++){
+                            const property = this.properties[k];
                             if (position === property.position){
-                                if (this.thisPlayer === property.owner){
-                                    this.yourProperty = true
+                                if (this.getPlayerByUserId().user.name === property.owner){
+                                    this.canBuy = false;
+                                    this.send(user);
+                                    return;
+                                }
+                                else if (property.owner){
+                                    const fee = property.price / 2;
+                                    const user = this.getPlayerByUserId();
+                                    user.money -= fee;
+                                    if (user.money < 0){
+                                        this.isStarted = false;
+                                    }
+                                    this.send(user);
+                                    this.canBuy = false;
+                                    return;
                                 }
                             }
                         }
@@ -251,16 +263,56 @@
                     }
                 }
             },
+            getPropertyOwner(id){
+                for (let i = 0; i<this.users.length; i++){
+                    const user = this.users[i];
+                    for (let i = 0; i < user.properties.length; i++){
+                        const property = user.properties[i];
+                        if (property.id === id){
+                            return user
+                        }
+                    }
+                }
+            },
             move(){
               let rand = 1 - 0.5 + Math.random() * 6;
               const step = Math.round(rand);
               const user = this.getPlayerByUserId();
               user.position += step;
               if (user.position > 19) {
+                  user.money += 1000;
                   user.position -= 20
               }
-
-              this.send(user);
+              this.yourTurn = false;
+              this.isYourProperty();
+            },
+            endMove(){
+                 const user = this.getPlayerByUserId();
+                 this.send(user);
+                 this.canBuy = false;
+            },
+            buy() {
+                console.log('Bought');
+                for(let i = 0; i<this.properties.length; i++){
+                    const property = this.properties[i];
+                    console.log(this.currentPosition);
+                    console.log(property.position);
+                    if (property.position === this.currentPosition){
+                        console.log("KEK");
+                        const user = this.getPlayerByUserId();
+                        user.money -= property.price;
+                        const prop = {
+                            "name": property.name,
+                            "id": property.id,
+                            "price": property.price,
+                            "position": property.position,
+                            "color": property.color,
+                            "mapPosition": property.mapPosition
+                        };
+                        user.properties.push(prop);
+                        this.send(user)
+                    }
+                }
             },
             send(userEntity) {
                 console.log("Send message:" + userEntity);
@@ -279,6 +331,7 @@
                         console.log(frame);
                         this.stompClient.subscribe("/topic/activity", tick => {
                             this.getPlayers();
+                            this.fetchProperties();
                             console.log(tick)
 
                         });
@@ -289,20 +342,42 @@
                     }
                 );
             },
-            getProperties() {
-                this.properties.push({
+            prepProps(){
+              this.properties.push({
                     "position": 0,
                     "mapPosition": 0,
                     "name": "START",
-                    "price": "Получить 200",
+                    "price": "Получить 1000",
                     "color": "black"
                 });
                 for (let i = 1; i < 36; i++) {
                     this.properties.push({"position": -1, "mapPosition": i, "name": "", "price": 0, "color": "white"})
                 }
-                this.incomeData.forEach((element) => {
-                    this.properties[element.mapPosition] = element
-                })
+            },
+            async fetchProperties() {
+                const resp = await this.axios.get('/property');
+                this.getProperties(resp.data)
+            },
+            getProperties(data) {
+                this.incomeData = data;
+                for (let i = 0; i<this.users.length; i++){
+                    const user = this.users[i];
+                    for (let k = 0; k < user.properties.length; k++){
+                        const userProp = user.properties[k];
+                        for (let j = 0; j < this.incomeData.length; j++){
+                            const prop = this.incomeData[j];
+                            if (userProp.id === prop.id){
+                                this.incomeData[j].owner = user.user.name;
+                            }
+                        }
+
+                    }
+                }
+                for (let i = 0; i<this.incomeData.length; i++){
+                    const prop = this.incomeData[i];
+                    console.log(prop);
+                    this.properties[prop.mapPosition] = prop
+                }
             }
         },
 

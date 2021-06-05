@@ -14,9 +14,36 @@ public class Property{
     private Long id;
     private String name;
     private int price;
+    private int position;
+    private String color;
+    private int mapPosition;
 
     @ManyToMany(mappedBy = "properties")
     private final Set<UserToRoom> userToRoomSet =new HashSet<>();
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public int getMapPosition() {
+        return mapPosition;
+    }
+
+    public void setMapPosition(int mapPosition) {
+        this.mapPosition = mapPosition;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
     public Long getId() {
         return id;
